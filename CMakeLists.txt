@@ -2,6 +2,8 @@ message("CMake version: ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}")
 cmake_minimum_required(VERSION 3.4)
 project(QtOIIO LANGUAGES CXX C)
 
+option(DEPTHMAP "Depth Map" ON)
+
 # C++11
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -21,8 +23,7 @@ endif()
 # Qt
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON) # needed for automoc
-find_package(Qt5Core REQUIRED)
-find_package(Qt5Widgets REQUIRED)
+find_package(Qt5 5.12 REQUIRED Core Gui Widgets)
 if(Qt5Core_FOUND)
   message(STATUS "Qt5 found.")
 endif()
@@ -39,5 +40,7 @@ add_definitions(-DQT_NO_DEBUG_OUTPUT)
 add_definitions(-DQTOIIO_USE_FORMATS_BLACKLIST)
 
 add_subdirectory(src/imageIOHandler)
-add_subdirectory(src/depthMapEntity)
 
+if(${DEPTHMAP})
+  add_subdirectory(src/depthMapEntity)
+endif()

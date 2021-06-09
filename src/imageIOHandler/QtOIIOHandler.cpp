@@ -8,6 +8,7 @@
 #include <QVariant>
 #include <QDataStream>
 #include <QDebug>
+#include <QtGlobal>
 
 #include <OpenImageIO/imageio.h>
 #include <OpenImageIO/imagebuf.h>
@@ -156,9 +157,11 @@ bool QtOIIOHandler::read(QImage *image)
         }
         else
         {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
             if(moreThan8Bits)
                 format = QImage::Format_Grayscale16; // Qt documentation: The image is stored using an 16-bit grayscale format. (added in Qt 5.13)
             else
+#endif
                 format = QImage::Format_Grayscale8; // Qt documentation: The image is stored using an 8-bit grayscale format.
             nchannels = 1;
         }
@@ -177,7 +180,9 @@ bool QtOIIOHandler::read(QImage *image)
             case QImage::Format_ARGB32: formatStr = "Format_ARGB32"; break;
             case QImage::Format_RGBX64: formatStr = "Format_RGBX64"; break;
             case QImage::Format_RGB32: formatStr = "Format_RGB32"; break;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
             case QImage::Format_Grayscale16: formatStr = "Format_Grayscale16"; break;
+#endif
             case QImage::Format_Grayscale8: formatStr = "Format_Grayscale8"; break;
             default:
                 formatStr = std::string("Unknown QImage Format:") + std::to_string(int(format));
